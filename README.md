@@ -89,7 +89,6 @@ Teacher app → **Settings → Start new season**, type `RESET`, then run throug
 | Test site: the clock will not move | Check the `TEST_MODE` variable is set to `on` on the test project and that it was redeployed afterwards. |
 | Forgot the PIN | In the D1 console run `UPDATE settings SET pin_hash = NULL, pin_version = pin_version + 1 WHERE id = 1;` then open `/teacher` and set a new PIN. Everyone is signed out. |
 | "Too many wrong PINs" | Five wrong PINs from one network block that network for 15 minutes. A school usually shares one network address, so this can affect all teachers at once. To clear it now, run `DELETE FROM login_attempt;` in the D1 console. |
-| Team logos show coloured circles | Logos load from ESPN's image server. If the school network blocks it, the app shows a circle with the team abbreviation instead. |
 
 ---
 
@@ -134,6 +133,12 @@ Schema changes go in a new numbered file in `migrations/`.
 - Production with the command line: put the real `database_id` (D1 → your database → overview) in `wrangler.toml`, run `npx wrangler login`, then `npx wrangler d1 migrations apply DB --remote`.
 
 `wrangler.toml` is only used locally and for that optional command; the dashboard deploy above ignores it.
+
+### Helmet images
+
+The 32 helmet images live in `public/helmets/<team id>.png` (lower-case abbreviation, e.g. `kc.png`, `wsh.png`), 256×256 with a transparent background, drawn facing right. They are served by the site itself, so nothing is loaded from ESPN.
+
+In a matchup the right-hand helmet is mirrored to face its opponent. Eight helmets carry lettering that would read backwards when mirrored (`chi`, `gb`, `kc`, `lv`, `nyg`, `nyj`, `pit`, `sf`), so those are not mirrored. To make one face left properly, add a left-facing image at `public/helmets/left/<team id>.png` and add its id to `LEFT_FACING_ART` in `src/components/Helmet.tsx`.
 
 ### How it is put together
 

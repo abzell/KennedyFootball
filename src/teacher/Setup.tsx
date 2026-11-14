@@ -75,6 +75,11 @@ function SeasonStep({ data, run }: StepProps) {
               The first game week must start on a Monday.
             </p>
           )}
+          {mondayOk && calendar.length > 0 && calendar[0].startAt <= data.now && !data.weeks.some((w) => w.started) && (
+            <p className="mt-1 text-sm text-gold" role="alert">
+              This date has already passed. Weeks before today will have no games; pick a future Monday unless that is what you want.
+            </p>
+          )}
         </div>
         <div>
           <label className="label" htmlFor="regular-weeks">
