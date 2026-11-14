@@ -228,6 +228,7 @@ export function buildState(snap: Snapshot, now: number): PublicState {
     lastPublishedWeek: published.length ? info(published[published.length - 1]) : null,
     revealAvailable: !!revealWeek,
     revealWeek: revealWeek ? info(revealWeek) : null,
+    revealBracket: !!revealWeek && revealWeek.type === 'regular' && regularWeeks(snap).at(-1)?.id === revealWeek.id && !!slotMatchup(snap, 'semi1'),
     championTeamId,
   };
 }

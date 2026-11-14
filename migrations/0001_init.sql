@@ -1,4 +1,3 @@
--- Kennedy Football League schema. Stores NO student data of any kind.
 CREATE TABLE IF NOT EXISTS settings (
   id INTEGER PRIMARY KEY CHECK (id = 1),
   pin_hash TEXT,
@@ -61,7 +60,6 @@ CREATE TABLE IF NOT EXISTS matchup (
 CREATE INDEX IF NOT EXISTS idx_matchup_week ON matchup(week_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_matchup_slot ON matchup(bracket_slot) WHERE bracket_slot IS NOT NULL;
 
--- One row per +1 tap. The raw source of truth for every score.
 CREATE TABLE IF NOT EXISTS award (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   team_id INTEGER NOT NULL REFERENCES team(id),
@@ -71,7 +69,6 @@ CREATE TABLE IF NOT EXISTS award (
 );
 CREATE INDEX IF NOT EXISTS idx_award_week_team ON award(week_id, team_id);
 
--- Cache of final weekly totals, written once when a week locks (derived from award).
 CREATE TABLE IF NOT EXISTS week_score (
   week_id INTEGER NOT NULL,
   team_id INTEGER NOT NULL,

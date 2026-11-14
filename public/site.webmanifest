@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "Kennedy Football League",
+  "short_name": "KFL",
+  "description": "Scores, standings, power rankings and playoffs for the Kennedy 5th Grade Football League.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0B1A33",
+  "theme_color": "#0B1A33",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

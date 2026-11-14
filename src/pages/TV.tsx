@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Game, PlayoffsData, PowerData, ScoreboardData, StandingRow, StandingsData } from '../../shared/types';
 import { Helmet } from '../components/Helmet';
-import { RevealButton } from '../components/Reveal';
+import { RevealButtons } from '../components/Reveal';
 import { TestBanner } from '../components/TestBanner';
 import { BracketView, ResultBadge, SeedCards, Wordmark, groupByDivision, lastText, sideResult } from '../components/ui';
 import { divisionLabel, pct, statusText, useApi, useBoundaryReload, useLookup, type Lookup } from '../lib';
@@ -147,7 +148,7 @@ export function TVPage() {
         body: (
           <div className="flex h-full flex-col items-center justify-center gap-10">
             <div className="display text-6xl text-mute">Who won this week?</div>
-            <RevealButton label={s.state.revealWeek.label} big />
+            <RevealButtons state={s.state} divisions={s.divisions} big />
           </div>
         ),
       });
@@ -210,6 +211,7 @@ export function TVPage() {
     return out;
   }, [sb.data, st.data, pw.data, po.data, l]);
 
+  const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = slides.length || 1;
@@ -234,7 +236,9 @@ export function TVPage() {
     const onKey = (e: KeyboardEvent) => {
       // While the reveal overlay is open it handles its own keys.
       if (document.querySelector('[role="dialog"]')) return;
-      if (e.key === 'ArrowRight') setIndex((i) => (i + 1) % count);
+      // Esc leaves TV mode (while in fullscreen the browser uses Esc to leave fullscreen first).
+      if (e.key === 'Escape' && !document.fullscreenElement) navigate('/');
+      else if (e.key === 'ArrowRight') setIndex((i) => (i + 1) % count);
       else if (e.key === 'ArrowLeft') setIndex((i) => (i - 1 + count) % count);
       else if (e.key === 'p' || e.key === 'P') setPaused((p) => !p);
       else if (e.key === 'f' || e.key === 'F') {
@@ -244,7 +248,7 @@ export function TVPage() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [count]);
+  }, [count, navigate]);
 
   // Scale the fixed 1920×1080 stage to fit any screen.
   const [scale, setScale] = useState(1);
@@ -271,7 +275,18 @@ export function TVPage() {
                 <span key={s.key} className={`h-3 w-10 rounded-full ${i === index % count ? 'bg-gold' : 'bg-line'}`} />
               ))}
             </div>
-            <div className="mt-2 text-lg">{paused ? 'Paused · P to resume' : '← → change slide · P pause · F fullscreen'}</div>
+            <div className="mt-2 flex items-center justify-end gap-4 text-lg">
+              <span>{paused ? 'Paused · P to resume' : '← → change slide · P pause · F fullscreen'}</span>
+              <Link
+                to="/"
+                className="btn text-xl"
+                onClick={() => {
+                  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                }}
+              >
+                ✕ Exit TV mode
+              </Link>
+            </div>
           </div>
         </header>
         <main className="min-h-0 flex-1" key={current?.key}>

@@ -6,7 +6,25 @@
     <meta name="theme-color" content="#0B1A33" />
     <meta name="description" content="Kennedy 5th Grade Football League: matchups, standings, power rankings and playoffs." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      // Two installable apps share this site: the public scoreboard and the teacher app.
+      // Advertise the one that matches the page being opened.
+      (function () {
+        var teacher = /^\/teacher(\/|$)/.test(location.pathname);
+        function link(rel, href) {
+          var l = document.createElement('link');
+          l.rel = rel;
+          l.href = href;
+          document.head.appendChild(l);
+        }
+        link('manifest', teacher ? '/manifest.webmanifest' : '/site.webmanifest');
+        link('apple-touch-icon', teacher ? '/apple-touch-icon-coach.png' : '/apple-touch-icon.png');
+        var m = document.createElement('meta');
+        m.name = 'apple-mobile-web-app-title';
+        m.content = teacher ? 'KFL Coach' : 'KFL';
+        document.head.appendChild(m);
+      })();
+    </script>
     <title>Kennedy Football League</title>
   </head>
   <body>

@@ -3,7 +3,7 @@ import { CATEGORIES, CATEGORY_INFO } from '../../shared/league';
 import { formatWeekRange } from '../../shared/time';
 import type { PlayoffsData, PowerData, ScheduleData, ScoreboardData, StandingsData, WeekInfo } from '../../shared/types';
 import { Helmet } from '../components/Helmet';
-import { RevealButton } from '../components/Reveal';
+import { RevealButtons } from '../components/Reveal';
 import { BracketView, GameCard, LoadState, Notice, PairingCard, SeedCards, StandingsTable, groupByDivision } from '../components/ui';
 import { statusText, useApi, useBoundaryReload, useLookup } from '../lib';
 
@@ -49,7 +49,7 @@ export function ScoreboardPage() {
             {statusText(s)}
           </div>
         </div>
-        {s.revealAvailable && s.revealWeek && <RevealButton label={s.revealWeek.label} />}
+        <RevealButtons state={s} divisions={data.divisions} />
       </div>
 
       {data.lastWeek && (
