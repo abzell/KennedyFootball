@@ -46,7 +46,7 @@ function TvStandings({ rows, l }: { rows: StandingRow[]; l: Lookup }) {
   const name = Math.max(26, Math.min(48, rowH * 0.5));
   return (
     <div className="card overflow-hidden">
-      <div className="grid grid-cols-[80px_1fr_220px_160px_140px_140px_150px_420px] items-center border-b border-line px-6 py-3 text-2xl font-semibold uppercase tracking-wide text-mute">
+      <div className="grid grid-cols-[80px_minmax(0,1fr)_220px_160px_140px_140px_150px_420px] items-center border-b border-line px-6 py-3 text-2xl font-semibold uppercase tracking-wide text-mute">
         <span>#</span>
         <span>Team</span>
         <span className="text-center">W-L-T</span>
@@ -59,7 +59,7 @@ function TvStandings({ rows, l }: { rows: StandingRow[]; l: Lookup }) {
       {rows.map((r) => {
         const t = l.team(r.teamId).nfl;
         return (
-          <div key={r.teamId} className="grid grid-cols-[80px_1fr_220px_160px_140px_140px_150px_420px] items-center border-b border-line/60 px-6 text-3xl last:border-0" style={{ height: rowH }}>
+          <div key={r.teamId} className="grid grid-cols-[80px_minmax(0,1fr)_220px_160px_140px_140px_150px_420px] items-center border-b border-line/60 px-6 text-3xl last:border-0" style={{ height: rowH }}>
             <span className="display font-bold text-mute" style={{ fontSize: name }}>
               {r.rank}
             </span>
@@ -91,7 +91,7 @@ function TvPower({ data, l }: { data: PowerData; l: Lookup }) {
   const rowH = Math.min(100, Math.floor(840 / Math.max(perCol, 1)));
   const name = Math.max(26, Math.min(44, rowH * 0.5));
   return (
-    <div className="grid gap-x-10" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${perCol}, ${rowH}px)`, gridAutoFlow: 'column' }}>
+    <div className="grid gap-x-10" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${perCol}, ${rowH}px)`, gridAutoFlow: 'column' }}>
       {data.rows.map((r) => {
         const t = l.team(r.teamId);
         return (
@@ -105,14 +105,15 @@ function TvPower({ data, l }: { data: PowerData; l: Lookup }) {
             <Helmet nfl={t.nfl.id} size={Math.min(68, rowH * 0.7)} />
             <span className="min-w-0 flex-1">
               <span className="display block truncate font-bold leading-tight" style={{ fontSize: name }}>
-                {t.nfl.city} {t.nfl.name}
+                {cols === 1 ? `${t.nfl.city} ` : ''}
+                {t.nfl.name}
               </span>
-              {rowH >= 80 && <span className="block text-xl text-mute">{t.division?.name}</span>}
+              {rowH >= 80 && <span className="block truncate text-xl text-mute">{t.division?.name}</span>}
             </span>
-            <span className="text-3xl font-bold tabular-nums">
+            <span className="shrink-0 text-3xl font-bold tabular-nums">
               {r.w}-{r.l}-{r.t}
             </span>
-            <span className="w-32 text-right text-2xl text-mute tabular-nums">{r.pf} PF</span>
+            <span className="w-32 shrink-0 text-right text-2xl text-mute tabular-nums">{r.pf} PF</span>
           </div>
         );
       })}
@@ -173,7 +174,7 @@ export function TVPage() {
         key: 'results',
         title: `${s.lastWeek.week.label} Results`,
         body: (
-          <div className="grid h-full content-start gap-x-8 gap-y-4" style={{ gridTemplateColumns: `repeat(${Math.min(groups.length, total > 9 ? 4 : 3) || 1}, 1fr)` }}>
+          <div className="grid h-full content-start gap-x-8 gap-y-4" style={{ gridTemplateColumns: `repeat(${Math.min(groups.length, total > 9 ? 4 : 3) || 1}, minmax(0, 1fr))` }}>
             {groups.map((g) => (
               <div key={g.title} className="space-y-4">
                 <div className="display text-3xl text-gold">{g.title}</div>
@@ -212,6 +213,12 @@ export function TVPage() {
   const [paused, setPaused] = useState(false);
   const count = slides.length || 1;
   const current = slides[index % count];
+
+  // When the reveal opens (Friday noon), bring its slide to the front.
+  const hasReveal = slides[0]?.key === 'reveal';
+  useEffect(() => {
+    if (hasReveal) setIndex(0);
+  }, [hasReveal]);
 
   useEffect(() => {
     if (paused || count < 2) return;

@@ -208,7 +208,7 @@ function Confetti() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {pieces.map((p, i) => (
-        <span key={i} className="confetti" style={{ left: `${p.left}%`, background: p.color, animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s` }} />
+        <span key={i} className="confetti" style={{ left: `${p.left}%`, background: p.color, animationDelay: `-${p.delay}s`, animationDuration: `${p.duration}s` }} />
       ))}
     </div>
   );
