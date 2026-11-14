@@ -111,6 +111,13 @@ async function ensureSemis(db: D1Database, snap: Snapshot) {
   if (snap.matchups.some((m) => m.bracketSlot === 'semi1')) return;
   const semiWeek = snap.weeks.find((w) => w.type === 'semifinal');
   if (!semiWeek) return;
+  // Playoffs only follow a regular season that was actually scheduled. Without this, setting up a
+  // season whose dates have already passed would create playoff games (and lock setup) as soon as
+  // four teams exist.
+  const regs = snap.weeks.filter((w) => w.type === 'regular');
+  const lastRegular = regs[regs.length - 1];
+  const played = !!lastRegular && snap.matchups.some((m) => !m.bracketSlot && m.weekId === lastRegular.id);
+  if (!played || validateStructure(snap.divisions, snap.teams).length > 0) return;
   const { seeds } = finalField(snap);
   if (seeds.length < 4) return;
   const ins = 'INSERT OR IGNORE INTO matchup (week_id, team_a_id, team_b_id, bracket_slot, seed_a, seed_b) VALUES (?, ?, ?, ?, ?, ?)';

@@ -550,6 +550,9 @@ async function route(request: Request, env: Env): Promise<Response> {
     if (b.confirm !== 'RESET') throw new HttpError(400, 'Type RESET to confirm.');
     // Deletes the whole season. The PIN (settings) is kept. Nothing is archived.
     await db.batch(['award', 'week_score', 'matchup', 'week', 'team', 'division', 'skip_week', 'season'].map((t) => db.prepare(`DELETE FROM ${t}`)));
+    // On a test site, a new season starts back at real time; a clock left in the future would
+    // make the new season's weeks look as if they had already happened.
+    if (isTestMode(env)) await db.prepare('UPDATE test_clock SET offset_ms = 0 WHERE id = 1').run().catch(() => {});
     return json({ ok: true });
   }
 
