@@ -40,6 +40,8 @@ export interface PublicState {
   lastPublishedWeek: WeekInfo | null;
   revealAvailable: boolean;
   revealWeek: WeekInfo | null;
+  /** The reveal week is the final regular-season week, so the playoff bracket can be revealed too. */
+  revealBracket: boolean;
   championTeamId: number | null;
 }
 

@@ -1,18 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CATEGORIES, CATEGORY_INFO } from '../../shared/league';
 import { readableOn } from '../../shared/nflTeams';
-import type { Game, RevealData, StandingRow } from '../../shared/types';
+import type { DivisionInfo, Game, PublicState, RevealData, StandingRow } from '../../shared/types';
 import { api, divisionLabel, makeLookup, usePrefersReducedMotion, type Lookup } from '../lib';
 import { Helmet } from './Helmet';
 import { BracketView, SeedCards, sideResult, slotTitle } from './ui';
 
 type Step = { kind: 'game'; game: Game } | { kind: 'standings' } | { kind: 'bracket' } | { kind: 'champion' };
 
-const GAME_MS = 7000;
-const END_MS = 12000;
+/** What one button reveals: one division's games, or just the playoff bracket. Empty = everything. */
+export interface RevealScope {
+  divisionId?: number;
+  part?: 'bracket';
+}
+
+const SIZES = {
+  sm: 'px-4 py-3 text-xl',
+  md: 'px-6 py-4 text-2xl',
+  lg: 'rounded-2xl px-10 py-8 text-5xl',
+  xl: 'rounded-3xl px-16 py-10 text-7xl',
+} as const;
 
 /** Button that fetches the just-locked week's results and plays them in this browser only. */
-export function RevealButton({ label, big = false }: { label: string; big?: boolean }) {
+export function RevealButton({ text, size = 'md', scope }: { text: string; size?: keyof typeof SIZES; scope?: RevealScope }) {
   const [data, setData] = useState<RevealData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -29,17 +39,33 @@ export function RevealButton({ label, big = false }: { label: string; big?: bool
   };
   return (
     <>
-      <button
-        type="button"
-        onClick={open}
-        disabled={busy}
-        className={`btn btn-gold anim-pulse display font-bold ${big ? 'rounded-3xl px-16 py-10 text-7xl' : 'w-full px-6 py-4 text-2xl sm:w-auto'}`}
-      >
-        🏈 Reveal {label} Winners
+      <button type="button" onClick={open} disabled={busy} className={`btn btn-gold anim-pulse display font-bold ${SIZES[size]}`}>
+        {text}
       </button>
       {error && <p className="mt-2 text-loss">{error}</p>}
-      {data && <Reveal data={data} onClose={() => setData(null)} />}
+      {data && <Reveal data={data} scope={scope} onClose={() => setData(null)} />}
     </>
+  );
+}
+
+/**
+ * Regular season: one button per division (plus the playoff bracket after the final week),
+ * so each class reveals only its own games. Playoffs: a single button.
+ */
+export function RevealButtons({ state, divisions, big = false }: { state: PublicState; divisions: DivisionInfo[]; big?: boolean }) {
+  const week = state.revealWeek;
+  if (!state.revealAvailable || !week) return null;
+  if (week.type !== 'regular') {
+    return <RevealButton text={`🏈 Reveal ${week.label} Winners`} size={big ? 'xl' : 'md'} />;
+  }
+  const size = big ? 'lg' : 'sm';
+  return (
+    <div className={`flex flex-wrap ${big ? 'justify-center gap-8' : 'gap-2 sm:justify-end'}`} role="group" aria-label={`Reveal ${week.label} winners`}>
+      {divisions.map((d) => (
+        <RevealButton key={d.id} text={`🏈 Reveal ${d.name}`} size={size} scope={{ divisionId: d.id }} />
+      ))}
+      {state.revealBracket && <RevealButton text="🏆 Reveal Playoff Bracket" size={size} scope={{ part: 'bracket' }} />}
+    </div>
   );
 }
 
@@ -214,39 +240,42 @@ function Confetti() {
   );
 }
 
-export function Reveal({ data, onClose }: { data: RevealData; onClose: () => void }) {
+export function Reveal({ data, scope, onClose }: { data: RevealData; scope?: RevealScope; onClose: () => void }) {
   const l = useMemo(() => makeLookup(data), [data]);
   const reduced = usePrefersReducedMotion();
+  const regular = data.week.type === 'regular';
+  const divisionId = regular ? scope?.divisionId : undefined;
+  const standings = useMemo(() => (data.standings ?? []).filter((d) => divisionId == null || d.divisionId === divisionId), [data, divisionId]);
   const steps = useMemo<Step[]>(() => {
-    const s: Step[] = data.games.map((game) => ({ kind: 'game', game }));
-    if (data.standings) s.push({ kind: 'standings' });
-    if (data.bracket && data.championTeamId == null) s.push({ kind: 'bracket' });
+    if (regular && scope?.part === 'bracket') return data.bracket ? [{ kind: 'bracket' }] : [];
+    const s: Step[] = data.games.filter((g) => divisionId == null || g.divisionId === divisionId).map((game) => ({ kind: 'game', game }));
+    if (standings.length) s.push({ kind: 'standings' });
+    // In the regular season the bracket has its own button, so no division's reveal spoils it.
+    if (!regular && data.bracket && data.championTeamId == null) s.push({ kind: 'bracket' });
     if (data.championTeamId != null) s.push({ kind: 'champion' });
     return s;
-  }, [data]);
+  }, [data, regular, scope, divisionId, standings]);
   const [i, setI] = useState(0);
   const step = steps[i];
   const last = i >= steps.length - 1;
+  // Nothing advances on its own: each game waits for a click so the class can talk about it.
   const next = useCallback(() => setI((v) => Math.min(v + 1, steps.length - 1)), [steps.length]);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-
-  // Auto-advance: ~7 s per matchup.
-  useEffect(() => {
-    if (last) return;
-    const id = setTimeout(next, step?.kind === 'game' ? GAME_MS : END_MS);
-    return () => clearTimeout(id);
-  }, [i, last, next, step]);
+  const upcoming = steps[i + 1];
+  const nextLabel = !upcoming ? '' : upcoming.kind === 'game' ? 'Next game ▶' : upcoming.kind === 'standings' ? 'Standings ▶' : upcoming.kind === 'bracket' ? 'Bracket ▶' : 'Champion ▶';
+  const scopeTitle = regular && scope?.part === 'bracket' ? 'Playoff Bracket' : divisionId != null ? l.division(divisionId)?.name ?? '' : '';
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      else if (e.key === ' ' || e.key === 'ArrowRight') {
+      else if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') {
         e.preventDefault();
         next();
       } else if (e.key === 'ArrowLeft') setI((v) => Math.max(0, v - 1));
     };
     window.addEventListener('keydown', onKey);
-    closeRef.current?.focus();
+    (nextRef.current ?? closeRef.current)?.focus();
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
@@ -258,31 +287,36 @@ export function Reveal({ data, onClose }: { data: RevealData; onClose: () => voi
   const champ = data.championTeamId != null ? l.team(data.championTeamId).nfl : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-navy" role="dialog" aria-modal="true" aria-label={`${data.week.label} results`}>
+    <div className="fixed inset-0 z-[70] flex flex-col bg-navy" role="dialog" aria-modal="true" aria-label={`${data.week.label} results`}>
       <div className="flex items-center gap-2 border-b border-line px-3 py-2">
         <div className="display flex-1 truncate text-lg font-bold sm:text-2xl">
           <span className="text-gold">{data.week.label}</span> Results
+          {scopeTitle && <span className="ml-2 text-mute">· {scopeTitle}</span>}
           <span className="ml-3 text-sm text-mute">
             {i + 1} / {steps.length}
           </span>
         </div>
-        <button type="button" className="btn" onClick={next} disabled={last}>
-          Next ›
-        </button>
-        <button type="button" className="btn" onClick={() => setI(steps.length - 1)} disabled={last}>
-          Skip to end
-        </button>
+        {!last && (
+          <button type="button" className="btn btn-gold display px-5 text-lg" onClick={next} ref={nextRef}>
+            {nextLabel}
+          </button>
+        )}
+        {steps.length > 2 && (
+          <button type="button" className="btn" onClick={() => setI(steps.length - 1)} disabled={last}>
+            Skip to end
+          </button>
+        )}
         <button type="button" className="btn" onClick={onClose} ref={closeRef}>
           Close ✕
         </button>
       </div>
       <div className="relative flex-1 overflow-auto p-3 sm:p-6">
         {step?.kind === 'game' && <GameStep key={step.game.id} game={step.game} l={l} reduced={reduced} />}
-        {step?.kind === 'standings' && data.standings && (
+        {step?.kind === 'standings' && standings.length > 0 && (
           <div>
             <div className="display mb-4 text-center text-3xl font-bold">Updated Standings</div>
-            <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {data.standings.map((d) => (
+            <div className={`mx-auto grid gap-4 ${standings.length === 1 ? 'max-w-xl' : 'max-w-6xl md:grid-cols-2 xl:grid-cols-3'}`}>
+              {standings.map((d) => (
                 <SortingTable key={d.divisionId} title={divisionLabel(l.division(d.divisionId))} before={d.before} after={d.after} l={l} reduced={reduced} />
               ))}
             </div>
