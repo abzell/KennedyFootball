@@ -3,7 +3,8 @@
 An NFL-themed classroom competition for Kennedy Elementary's 5th grade. Teachers tap to award points to student teams during the school week; a public site shows matchups, standings, power rankings and the playoff bracket, with a "Reveal winners" animation every Friday.
 
 - **Public site** (no sign-in): `/` scoreboard, `/standings`, `/power`, `/playoffs`, `/schedule`, `/tv` (projector mode)
-- **Teacher app** (one shared PIN): `/teacher` — installable on phones, Chromebooks and laptops
+- **Teacher app** (one shared PIN): `/teacher` — installable on phones, Chromebooks and laptops as “KFL Coach”
+- **Two installable apps from one address:** the public pages install as “KFL” (opens on the scoreboard, navy icon); the teacher screens install as “KFL Coach” (opens on scoring, gold icon). Each area has its own **Install app** button.
 - **No student data** is stored. Teams are the smallest unit.
 - **Runs free** on Cloudflare Pages + D1 and never goes to sleep. There are no scheduled jobs: lock (Fri 12:00 PM Central), reveal and publish (Mon 12:00 AM Central) are worked out from the clock on every request.
 

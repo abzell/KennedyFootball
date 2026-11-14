@@ -9,22 +9,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
-      manifest: {
-        name: 'Kennedy Football League – Teacher',
-        short_name: 'KFL Coach',
-        description: 'Award points for the Kennedy 5th Grade Football League.',
-        start_url: '/teacher',
-        scope: '/',
-        display: 'standalone',
-        background_color: '#0B1A33',
-        theme_color: '#0B1A33',
-        icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-        ],
-      },
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'apple-touch-icon-coach.png'],
+      // The two app manifests are static files in public/ (see index.html), not generated here.
+      manifest: false,
       workbox: {
         // Cache the app shell only. API calls are never cached: scoring always hits the network.
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],

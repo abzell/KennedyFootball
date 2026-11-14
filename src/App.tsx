@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Link, NavLink, Outlet, Route, Routes } from 'react-router-dom';
+import { InstallButton } from './components/Install';
 import { TestBanner } from './components/TestBanner';
 import { Wordmark } from './components/ui';
 import { PlayoffsPage, PowerPage, SchedulePage, ScoreboardPage, StandingsPage } from './pages/Public';
@@ -49,9 +50,12 @@ function PublicLayout() {
       </main>
       <footer className="border-t border-line px-3 py-4 text-center text-xs text-mute">
         Kennedy Elementary · 5th Grade Football League ·{' '}
-        <Link to="/teacher" className="underline">
+        <a href="/teacher" className="underline">
           Teachers
-        </Link>
+        </a>
+        <div className="mt-3">
+          <InstallButton app="public" className="text-sm" />
+        </div>
       </footer>
     </div>
   );

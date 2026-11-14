@@ -1,0 +1,16 @@
+{
+  "id": "/teacher",
+  "name": "Kennedy Football League – Teacher",
+  "short_name": "KFL Coach",
+  "description": "Award points for the Kennedy 5th Grade Football League.",
+  "start_url": "/teacher",
+  "scope": "/teacher",
+  "display": "standalone",
+  "background_color": "#0B1A33",
+  "theme_color": "#0B1A33",
+  "icons": [
+    { "src": "/icons/coach-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/coach-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/coach-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
