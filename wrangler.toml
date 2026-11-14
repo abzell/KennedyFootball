@@ -1,0 +1,10 @@
+# Used for LOCAL development and the optional command-line deploy only.
+# The Cloudflare dashboard (Git) deploy described in the README ignores this file.
+name = "kennedy-football-league"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kfl"
+database_id = "kfl-local"
+migrations_dir = "migrations"

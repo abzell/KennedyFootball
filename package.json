@@ -1,0 +1,41 @@
+{
+  "name": "kennedy-football-league",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run db:migrate && mkdir -p dist && concurrently -k -n web,api \"vite\" \"wrangler pages dev dist --port 8788 --d1 DB=kfl-local --compatibility-date=2025-01-01\"",
+    "build": "tsc --noEmit && vite build",
+    "preview": "npm run build && npm run db:migrate && wrangler pages dev dist --port 8788 --d1 DB=kfl-local --compatibility-date=2025-01-01",
+    "db:migrate": "wrangler d1 migrations apply DB --local",
+    "seed:demo": "npm run db:migrate && tsx scripts/seed-demo.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^10.0.7",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.162.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "description": "Kennedy 5th Grade Football League"
+}
