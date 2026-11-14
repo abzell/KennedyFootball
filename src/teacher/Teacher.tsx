@@ -133,9 +133,9 @@ export function InstallButton({ className = '' }: { className?: string }) {
 
 // ------------------------------------------------------------------ PIN
 
-function PinPad({ title, hint, onSubmit }: { title: string; hint?: string; onSubmit: (pin: string) => Promise<string | null> }) {
+function PinPad({ title, hint, initialError = null, onSubmit }: { title: string; hint?: string; initialError?: string | null; onSubmit: (pin: string) => Promise<string | null> }) {
   const [pin, setPin] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError);
   const [busy, setBusy] = useState(false);
   const submit = useCallback(async () => {
     if (pin.length < 4 || busy) return;
@@ -196,12 +196,22 @@ function PinPad({ title, hint, onSubmit }: { title: string; hint?: string; onSub
 
 function SetPin({ onDone }: { onDone: () => void }) {
   const [first, setFirst] = useState<string | null>(null);
+  // Shown on the first keypad after a failed confirmation (the confirm keypad is replaced).
+  const [problem, setProblem] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const restart = (message: string) => {
+    setProblem(message);
+    setAttempt((n) => n + 1);
+    setFirst(null);
+    return message;
+  };
   if (first === null) {
     return (
       <PinPad
-        key="first"
+        key={`first-${attempt}`}
         title="Set the teacher PIN"
         hint="Choose 4 to 8 digits. Every 5th grade teacher will share this PIN."
+        initialError={problem}
         onSubmit={async (pin) => {
           setFirst(pin);
           return null;
@@ -214,17 +224,13 @@ function SetPin({ onDone }: { onDone: () => void }) {
       key="confirm"
       title="Enter the PIN again to confirm"
       onSubmit={async (pin) => {
-        if (pin !== first) {
-          setFirst(null);
-          return 'The PINs did not match. Start again.';
-        }
+        if (pin !== first) return restart('The PINs did not match. Start again.');
         try {
           await api('/api/auth/set-pin', { method: 'POST', body: { pin } });
           onDone();
           return null;
         } catch (e) {
-          setFirst(null);
-          return (e as Error).message;
+          return restart((e as Error).message);
         }
       }}
     />

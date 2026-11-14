@@ -109,9 +109,15 @@ async function recordFailure(db: D1Database, ip: string, now: number) {
 
 async function publicSnapshot(env: Env, now: number): Promise<Snapshot> {
   const real = Date.now();
-  if (!cached || real - cached.at > PUBLIC_CACHE_MS) cached = { snap: await loadSnapshot(env.DB), at: real };
-  await ensureDerived(env.DB, cached.snap, now);
-  return cached.snap;
+  // Keep a local reference: another request may replace or clear `cached` while this one awaits,
+  // and that newer snapshot may not have been through ensureDerived() yet.
+  let entry = cached;
+  if (!entry || real - entry.at > PUBLIC_CACHE_MS) {
+    entry = { snap: await loadSnapshot(env.DB), at: real };
+    cached = entry;
+  }
+  await ensureDerived(env.DB, entry.snap, now);
+  return entry.snap;
 }
 
 async function freshSnapshot(env: Env, now: number): Promise<Snapshot> {
