@@ -1,0 +1,508 @@
+[
+  {
+    "id": 1,
+    "abbr": "ARI",
+    "espnAbbr": "ari",
+    "name": "Arizona Cardinals",
+    "conference": "NFC",
+    "division": "West",
+    "shellColor": "#FFFFFF",
+    "facemaskColor": "#8A8D8F",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/ARI.png",
+    "svgPath": "/helmets/svg/ARI.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png"
+  },
+  {
+    "id": 2,
+    "abbr": "ATL",
+    "espnAbbr": "atl",
+    "name": "Atlanta Falcons",
+    "conference": "NFC",
+    "division": "South",
+    "shellColor": "#000000",
+    "facemaskColor": "#000000",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/ATL.png",
+    "svgPath": "/helmets/svg/ATL.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"
+  },
+  {
+    "id": 3,
+    "abbr": "BAL",
+    "espnAbbr": "bal",
+    "name": "Baltimore Ravens",
+    "conference": "AFC",
+    "division": "North",
+    "shellColor": "#1A195F",
+    "facemaskColor": "#000000",
+    "stripeColors": [
+      "#9E7C0C",
+      "#000000",
+      "#9E7C0C"
+    ],
+    "pngPath": "/helmets/png/BAL.png",
+    "svgPath": "/helmets/svg/BAL.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"
+  },
+  {
+    "id": 4,
+    "abbr": "BUF",
+    "espnAbbr": "buf",
+    "name": "Buffalo Bills",
+    "conference": "AFC",
+    "division": "East",
+    "shellColor": "#FFFFFF",
+    "facemaskColor": "#8A8D8F",
+    "stripeColors": [
+      "#00338D",
+      "#C60C30",
+      "#00338D"
+    ],
+    "pngPath": "/helmets/png/BUF.png",
+    "svgPath": "/helmets/svg/BUF.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+  },
+  {
+    "id": 5,
+    "abbr": "CAR",
+    "espnAbbr": "car",
+    "name": "Carolina Panthers",
+    "conference": "NFC",
+    "division": "South",
+    "shellColor": "#BFC0BF",
+    "facemaskColor": "#000000",
+    "stripeColors": [
+      "#0085CA",
+      "#000000",
+      "#0085CA"
+    ],
+    "pngPath": "/helmets/png/CAR.png",
+    "svgPath": "/helmets/svg/CAR.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/car.png"
+  },
+  {
+    "id": 6,
+    "abbr": "CHI",
+    "espnAbbr": "chi",
+    "name": "Chicago Bears",
+    "conference": "NFC",
+    "division": "North",
+    "shellColor": "#0B162A",
+    "facemaskColor": "#0B162A",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/CHI.png",
+    "svgPath": "/helmets/svg/CHI.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"
+  },
+  {
+    "id": 7,
+    "abbr": "CIN",
+    "espnAbbr": "cin",
+    "name": "Cincinnati Bengals",
+    "conference": "AFC",
+    "division": "North",
+    "shellColor": "#FB4F14",
+    "facemaskColor": "#000000",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/CIN.png",
+    "svgPath": "/helmets/svg/CIN.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png"
+  },
+  {
+    "id": 8,
+    "abbr": "CLE",
+    "espnAbbr": "cle",
+    "name": "Cleveland Browns",
+    "conference": "AFC",
+    "division": "North",
+    "shellColor": "#FF3C00",
+    "facemaskColor": "#311D00",
+    "stripeColors": [
+      "#311D00",
+      "#FFFFFF",
+      "#311D00"
+    ],
+    "pngPath": "/helmets/png/CLE.png",
+    "svgPath": "/helmets/svg/CLE.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png"
+  },
+  {
+    "id": 9,
+    "abbr": "DAL",
+    "espnAbbr": "dal",
+    "name": "Dallas Cowboys",
+    "conference": "NFC",
+    "division": "East",
+    "shellColor": "#B0B7BC",
+    "facemaskColor": "#8A8D8F",
+    "stripeColors": [
+      "#003594",
+      "#FFFFFF",
+      "#003594"
+    ],
+    "pngPath": "/helmets/png/DAL.png",
+    "svgPath": "/helmets/svg/DAL.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"
+  },
+  {
+    "id": 10,
+    "abbr": "DEN",
+    "espnAbbr": "den",
+    "name": "Denver Broncos",
+    "conference": "AFC",
+    "division": "West",
+    "shellColor": "#002244",
+    "facemaskColor": "#002244",
+    "stripeColors": [
+      "#FB4F14"
+    ],
+    "pngPath": "/helmets/png/DEN.png",
+    "svgPath": "/helmets/svg/DEN.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/den.png"
+  },
+  {
+    "id": 11,
+    "abbr": "DET",
+    "espnAbbr": "det",
+    "name": "Detroit Lions",
+    "conference": "NFC",
+    "division": "North",
+    "shellColor": "#B0B7BC",
+    "facemaskColor": "#8A8D8F",
+    "stripeColors": [
+      "#0076B6",
+      "#FFFFFF",
+      "#0076B6"
+    ],
+    "pngPath": "/helmets/png/DET.png",
+    "svgPath": "/helmets/svg/DET.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/det.png"
+  },
+  {
+    "id": 12,
+    "abbr": "GB",
+    "espnAbbr": "gb",
+    "name": "Green Bay Packers",
+    "conference": "NFC",
+    "division": "North",
+    "shellColor": "#FFB612",
+    "facemaskColor": "#203731",
+    "stripeColors": [
+      "#203731",
+      "#FFFFFF",
+      "#203731"
+    ],
+    "pngPath": "/helmets/png/GB.png",
+    "svgPath": "/helmets/svg/GB.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png"
+  },
+  {
+    "id": 13,
+    "abbr": "HOU",
+    "espnAbbr": "hou",
+    "name": "Houston Texans",
+    "conference": "AFC",
+    "division": "South",
+    "shellColor": "#03202F",
+    "facemaskColor": "#A71930",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/HOU.png",
+    "svgPath": "/helmets/svg/HOU.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png"
+  },
+  {
+    "id": 14,
+    "abbr": "IND",
+    "espnAbbr": "ind",
+    "name": "Indianapolis Colts",
+    "conference": "AFC",
+    "division": "South",
+    "shellColor": "#FFFFFF",
+    "facemaskColor": "#002C5F",
+    "stripeColors": [
+      "#002C5F"
+    ],
+    "pngPath": "/helmets/png/IND.png",
+    "svgPath": "/helmets/svg/IND.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png"
+  },
+  {
+    "id": 15,
+    "abbr": "JAX",
+    "espnAbbr": "jax",
+    "name": "Jacksonville Jaguars",
+    "conference": "AFC",
+    "division": "South",
+    "shellColor": "#101820",
+    "facemaskColor": "#101820",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/JAX.png",
+    "svgPath": "/helmets/svg/JAX.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"
+  },
+  {
+    "id": 16,
+    "abbr": "KC",
+    "espnAbbr": "kc",
+    "name": "Kansas City Chiefs",
+    "conference": "AFC",
+    "division": "West",
+    "shellColor": "#E31837",
+    "facemaskColor": "#FFFFFF",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/KC.png",
+    "svgPath": "/helmets/svg/KC.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
+  },
+  {
+    "id": 17,
+    "abbr": "LAC",
+    "espnAbbr": "lac",
+    "name": "Los Angeles Chargers",
+    "conference": "AFC",
+    "division": "West",
+    "shellColor": "#002244",
+    "facemaskColor": "#002244",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/LAC.png",
+    "svgPath": "/helmets/svg/LAC.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png"
+  },
+  {
+    "id": 18,
+    "abbr": "LAR",
+    "espnAbbr": "lar",
+    "name": "Los Angeles Rams",
+    "conference": "NFC",
+    "division": "West",
+    "shellColor": "#003594",
+    "facemaskColor": "#003594",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/LAR.png",
+    "svgPath": "/helmets/svg/LAR.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png"
+  },
+  {
+    "id": 19,
+    "abbr": "LV",
+    "espnAbbr": "lv",
+    "name": "Las Vegas Raiders",
+    "conference": "AFC",
+    "division": "West",
+    "shellColor": "#A5ACAF",
+    "facemaskColor": "#000000",
+    "stripeColors": [
+      "#000000"
+    ],
+    "pngPath": "/helmets/png/LV.png",
+    "svgPath": "/helmets/svg/LV.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png"
+  },
+  {
+    "id": 20,
+    "abbr": "MIA",
+    "espnAbbr": "mia",
+    "name": "Miami Dolphins",
+    "conference": "AFC",
+    "division": "East",
+    "shellColor": "#008E97",
+    "facemaskColor": "#008E97",
+    "stripeColors": [
+      "#FC4C02",
+      "#FFFFFF",
+      "#FC4C02"
+    ],
+    "pngPath": "/helmets/png/MIA.png",
+    "svgPath": "/helmets/svg/MIA.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png"
+  },
+  {
+    "id": 21,
+    "abbr": "MIN",
+    "espnAbbr": "min",
+    "name": "Minnesota Vikings",
+    "conference": "NFC",
+    "division": "North",
+    "shellColor": "#4F2683",
+    "facemaskColor": "#4F2683",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/MIN.png",
+    "svgPath": "/helmets/svg/MIN.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/min.png"
+  },
+  {
+    "id": 22,
+    "abbr": "NE",
+    "espnAbbr": "ne",
+    "name": "New England Patriots",
+    "conference": "AFC",
+    "division": "East",
+    "shellColor": "#B0B7BC",
+    "facemaskColor": "#C60C30",
+    "stripeColors": [
+      "#002244",
+      "#C60C30",
+      "#002244"
+    ],
+    "pngPath": "/helmets/png/NE.png",
+    "svgPath": "/helmets/svg/NE.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
+  },
+  {
+    "id": 23,
+    "abbr": "NO",
+    "espnAbbr": "no",
+    "name": "New Orleans Saints",
+    "conference": "NFC",
+    "division": "South",
+    "shellColor": "#D3BC8D",
+    "facemaskColor": "#101820",
+    "stripeColors": [
+      "#101820",
+      "#FFFFFF",
+      "#101820"
+    ],
+    "pngPath": "/helmets/png/NO.png",
+    "svgPath": "/helmets/svg/NO.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/no.png"
+  },
+  {
+    "id": 24,
+    "abbr": "NYG",
+    "espnAbbr": "nyg",
+    "name": "New York Giants",
+    "conference": "NFC",
+    "division": "East",
+    "shellColor": "#0B2265",
+    "facemaskColor": "#A5ACAF",
+    "stripeColors": [
+      "#A71930"
+    ],
+    "pngPath": "/helmets/png/NYG.png",
+    "svgPath": "/helmets/svg/NYG.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png"
+  },
+  {
+    "id": 25,
+    "abbr": "NYJ",
+    "espnAbbr": "nyj",
+    "name": "New York Jets",
+    "conference": "AFC",
+    "division": "East",
+    "shellColor": "#125740",
+    "facemaskColor": "#125740",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/NYJ.png",
+    "svgPath": "/helmets/svg/NYJ.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png"
+  },
+  {
+    "id": 26,
+    "abbr": "PHI",
+    "espnAbbr": "phi",
+    "name": "Philadelphia Eagles",
+    "conference": "NFC",
+    "division": "East",
+    "shellColor": "#004C54",
+    "facemaskColor": "#004C54",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/PHI.png",
+    "svgPath": "/helmets/svg/PHI.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"
+  },
+  {
+    "id": 27,
+    "abbr": "PIT",
+    "espnAbbr": "pit",
+    "name": "Pittsburgh Steelers",
+    "conference": "AFC",
+    "division": "North",
+    "shellColor": "#101820",
+    "facemaskColor": "#101820",
+    "stripeColors": [
+      "#FFB612"
+    ],
+    "pngPath": "/helmets/png/PIT.png",
+    "svgPath": "/helmets/svg/PIT.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png"
+  },
+  {
+    "id": 28,
+    "abbr": "SEA",
+    "espnAbbr": "sea",
+    "name": "Seattle Seahawks",
+    "conference": "NFC",
+    "division": "West",
+    "shellColor": "#002244",
+    "facemaskColor": "#002244",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/SEA.png",
+    "svgPath": "/helmets/svg/SEA.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png"
+  },
+  {
+    "id": 29,
+    "abbr": "SF",
+    "espnAbbr": "sf",
+    "name": "San Francisco 49ers",
+    "conference": "NFC",
+    "division": "West",
+    "shellColor": "#B3995D",
+    "facemaskColor": "#A5ACAF",
+    "stripeColors": [
+      "#AA0000",
+      "#FFFFFF",
+      "#AA0000"
+    ],
+    "pngPath": "/helmets/png/SF.png",
+    "svgPath": "/helmets/svg/SF.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"
+  },
+  {
+    "id": 30,
+    "abbr": "TB",
+    "espnAbbr": "tb",
+    "name": "Tampa Bay Buccaneers",
+    "conference": "NFC",
+    "division": "South",
+    "shellColor": "#34302B",
+    "facemaskColor": "#000000",
+    "stripeColors": [],
+    "pngPath": "/helmets/png/TB.png",
+    "svgPath": "/helmets/svg/TB.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"
+  },
+  {
+    "id": 31,
+    "abbr": "TEN",
+    "espnAbbr": "ten",
+    "name": "Tennessee Titans",
+    "conference": "AFC",
+    "division": "South",
+    "shellColor": "#FFFFFF",
+    "facemaskColor": "#0C2340",
+    "stripeColors": [
+      "#0C2340"
+    ],
+    "pngPath": "/helmets/png/TEN.png",
+    "svgPath": "/helmets/svg/TEN.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png"
+  },
+  {
+    "id": 32,
+    "abbr": "WAS",
+    "espnAbbr": "wsh",
+    "name": "Washington Commanders",
+    "conference": "NFC",
+    "division": "East",
+    "shellColor": "#5A1414",
+    "facemaskColor": "#FFB612",
+    "stripeColors": [
+      "#FFB612"
+    ],
+    "pngPath": "/helmets/png/WAS.png",
+    "svgPath": "/helmets/svg/WAS.svg",
+    "espnLogoUrl": "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
+  }
+]
