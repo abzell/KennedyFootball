@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import type { Game, PlayoffsData, PowerData, ScoreboardData, StandingRow, StandingsData } from '../../shared/types';
 import { Helmet } from '../components/Helmet';
 import { RevealButton } from '../components/Reveal';
+import { TestBanner } from '../components/TestBanner';
 import { BracketView, ResultBadge, SeedCards, Wordmark, groupByDivision, lastText, sideResult } from '../components/ui';
 import { divisionLabel, pct, statusText, useApi, useBoundaryReload, useLookup, type Lookup } from '../lib';
 import { Movement } from './Public';
@@ -256,6 +257,7 @@ export function TVPage() {
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-navy">
+      <TestBanner floating />
       <div style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'top left', marginLeft: (window.innerWidth - W * scale) / 2, marginTop: (window.innerHeight - H * scale) / 2 }} className="flex flex-col px-14 py-8">
         <header className="mb-6 flex items-end justify-between border-b-4 border-gold pb-4">
           <div>

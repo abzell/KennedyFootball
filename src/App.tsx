@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Link, NavLink, Outlet, Route, Routes } from 'react-router-dom';
+import { TestBanner } from './components/TestBanner';
 import { Wordmark } from './components/ui';
 import { PlayoffsPage, PowerPage, SchedulePage, ScoreboardPage, StandingsPage } from './pages/Public';
 import { TVPage } from './pages/TV';
@@ -18,6 +19,7 @@ const NAV = [
 function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col">
+      <TestBanner />
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-gold focus:px-3 focus:py-2 focus:text-navy">
         Skip to content
       </a>

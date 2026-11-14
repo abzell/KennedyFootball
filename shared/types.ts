@@ -180,6 +180,23 @@ export interface SetupData {
   errors: string[];
 }
 
+/** Public: whether this deployment is a test site, and its simulated time. */
+export interface TestStatus {
+  enabled: boolean;
+  now: number;
+  offsetMs: number;
+}
+
+/** Teacher-only view of the test clock. */
+export interface TestClock {
+  now: number;
+  realNow: number;
+  offsetMs: number;
+  next: { at: number; label: string } | null;
+  state: PublicState;
+  scoringOpen: boolean;
+}
+
 export interface AuthStatus {
   pinSet: boolean;
   authed: boolean;

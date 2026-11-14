@@ -1,11 +1,11 @@
 // HTTP API. Every write endpoint checks the teacher session on the server.
 
-import { scoringStatus } from '../shared/calendar';
+import { nextClockStep, scoringStatus } from '../shared/calendar';
 import { CATEGORIES, type Category } from '../shared/league';
 import { isNflTeamId } from '../shared/nflTeams';
 import { validatePairs, type Pair } from '../shared/schedule';
 import { isMonday, isValidDate } from '../shared/time';
-import type { AuthStatus, AwardRow } from '../shared/types';
+import type { AuthStatus, AwardRow, TestClock, TestStatus } from '../shared/types';
 import { checkToken, clearCookie, COOKIE, hashPin, isValidPin, makeToken, newSecret, readCookie, sessionCookie, verifyPin } from './auth';
 import { applyCalendar, ensureDerived, HttpError, liveTotals, loadSkipWeeks, loadSnapshot, syncSchedule, type Env } from './store';
 import {
@@ -41,13 +41,34 @@ function isLocalHost(hostname: string): boolean {
   return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]';
 }
 
-/** Server clock. NOW_OVERRIDE is honoured only when serving from localhost (development). */
-export function getNow(request: Request, env: Env): number {
+export function isTestMode(env: Env): boolean {
+  const v = (env.TEST_MODE ?? '').trim().toLowerCase();
+  return v !== '' && v !== 'off' && v !== 'false' && v !== '0';
+}
+
+/** Simulated-clock offset. Always 0 unless this deployment was explicitly made a test site. */
+async function testOffset(env: Env): Promise<number> {
+  if (!isTestMode(env)) return 0;
+  try {
+    const row = await env.DB.prepare('SELECT offset_ms FROM test_clock WHERE id = 1').first<{ offset_ms: number }>();
+    return row?.offset_ms ?? 0;
+  } catch {
+    return 0; // table missing: migration 0002 has not been run
+  }
+}
+
+/**
+ * Server clock.
+ * - NOW_OVERRIDE (a fixed instant) is honoured only when serving from localhost (development).
+ * - On a test site (TEST_MODE set) the real clock is shifted by a stored offset.
+ * - Otherwise: the real time. Nothing a visitor or teacher does can change it.
+ */
+export async function getNow(request: Request, env: Env): Promise<number> {
   if (env.NOW_OVERRIDE && isLocalHost(new URL(request.url).hostname)) {
     const t = Date.parse(env.NOW_OVERRIDE);
     if (!Number.isNaN(t)) return t;
   }
-  return Date.now();
+  return Date.now() + (await testOffset(env));
 }
 
 async function body(request: Request): Promise<Record<string, any>> {
@@ -172,7 +193,7 @@ async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname.replace(/\/+$/, '');
   const method = request.method;
-  const now = getNow(request, env);
+  const now = await getNow(request, env);
   const db = env.DB;
   if (method !== 'GET') assertSameOrigin(request);
   const is = (m: string, p: string) => method === m && path === p;
@@ -189,6 +210,12 @@ async function route(request: Request, env: Env): Promise<Response> {
   if (is('GET', '/api/reveal')) {
     const data = buildReveal(await publicSnapshot(env, now), now);
     return data ? json(data) : json({ error: 'No reveal is available right now.' }, 404);
+  }
+
+  if (is('GET', '/api/test/status')) {
+    const enabled = isTestMode(env);
+    const status: TestStatus = { enabled, now, offsetMs: enabled ? await testOffset(env) : 0 };
+    return json(status);
   }
 
   // ------------------------------------------------------------ auth
@@ -248,7 +275,7 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   // ------------------------------------------------------------ everything below needs a teacher session
   if (!path.startsWith('/api/')) throw new HttpError(404, 'Not found.');
-  const known = /^\/api\/(teacher|awards|setup|season)(\/|$)/.test(path);
+  const known = /^\/api\/(teacher|awards|setup|season|test)(\/|$)/.test(path);
   if (!known) throw new HttpError(404, 'Not found.');
   await requireTeacher(request, env, now);
   if (method !== 'GET') cached = null;
@@ -305,6 +332,68 @@ async function route(request: Request, env: Env): Promise<Response> {
       .run();
     if (!res.meta.changes) throw new HttpError(409, 'This week is locked. Awards can no longer be changed.');
     return json({ ok: true });
+  }
+
+  // ------------------------------------------------------------ test site only: simulated clock
+  if (path.startsWith('/api/test/')) {
+    if (!isTestMode(env)) throw new HttpError(404, 'Not found.');
+    const clock = async (): Promise<TestClock> => {
+      const t = await getNow(request, env);
+      const snap = await freshSnapshot(env, t);
+      const state = buildState(snap, t);
+      return {
+        now: t,
+        realNow: Date.now(),
+        offsetMs: await testOffset(env),
+        next: nextClockStep(state.phase === 'no_season' ? [] : snap.weeks, t),
+        state,
+        scoringOpen: scoringStatus(snap.weeks, t).open && state.phase === 'open',
+      };
+    };
+    const setOffset = async (offset: number) => {
+      await db.batch([
+        db.prepare('CREATE TABLE IF NOT EXISTS test_clock (id INTEGER PRIMARY KEY CHECK (id = 1), offset_ms INTEGER NOT NULL DEFAULT 0)'),
+        db.prepare('INSERT INTO test_clock (id, offset_ms) VALUES (1, ?1) ON CONFLICT(id) DO UPDATE SET offset_ms = ?1').bind(Math.round(offset)),
+      ]);
+    };
+
+    if (is('GET', '/api/test/clock')) return json(await clock());
+
+    if (is('POST', '/api/test/clock')) {
+      const b = await body(request);
+      if (env.NOW_OVERRIDE && isLocalHost(url.hostname)) throw new HttpError(409, 'NOW_OVERRIDE is set, so the clock is frozen. Remove it to use the test clock.');
+      if (b.action === 'real') {
+        await setOffset(0);
+      } else if (b.action === 'next') {
+        const step = (await clock()).next;
+        if (!step) throw new HttpError(409, 'There is nothing left to step to. Create a season, or the season is over.');
+        await setOffset(step.at - Date.now());
+      } else if (b.action === 'set' && typeof b.at === 'number' && Number.isFinite(b.at)) {
+        if (Math.abs(b.at - Date.now()) > 5 * 365 * 86400000) throw new HttpError(400, 'Pick a time within five years of today.');
+        await setOffset(b.at - Date.now());
+      } else {
+        throw new HttpError(400, 'Unknown clock action.');
+      }
+      return json(await clock());
+    }
+
+    if (is('POST', '/api/test/fill')) {
+      // Adds random points for every team playing in the open week, so a season can be simulated quickly.
+      const snap = await freshSnapshot(env, now);
+      const status = scoringStatus(snap.weeks, now);
+      if (!status.open || !status.week) throw new HttpError(409, 'Scoring is closed right now. Step the clock to an open game week first.');
+      const weekId = status.week.id;
+      const teamIds = snap.matchups.filter((x) => x.weekId === weekId).flatMap((x) => [x.teamAId, x.teamBId]);
+      if (teamIds.length === 0) throw new HttpError(409, 'No teams are playing this week.');
+      const rows: string[] = [];
+      const rnd = (n: number) => crypto.getRandomValues(new Uint32Array(1))[0] % n;
+      for (const teamId of teamIds) for (const c of CATEGORIES) for (let i = rnd(9) + 2; i > 0; i--) rows.push(`(${Number(teamId)}, ${Number(weekId)}, '${c}', ${Math.round(now)})`);
+      const stmts: D1PreparedStatement[] = [];
+      for (let i = 0; i < rows.length; i += 200) stmts.push(db.prepare(`INSERT INTO award (team_id, week_id, category, created_at) VALUES ${rows.slice(i, i + 200).join(', ')}`));
+      await db.batch(stmts);
+      return json({ ok: true, awards: rows.length, teams: teamIds.length });
+    }
+    throw new HttpError(404, 'Not found.');
   }
 
   // ------------------------------------------------------------ setup

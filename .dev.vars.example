@@ -1,3 +1,7 @@
-# Copy to .dev.vars to freeze the server clock while testing locally.
-# Ignored unless the site is being served from localhost.
+# Copy to .dev.vars for local testing, then restart `npm run dev`.
+
+# Freeze the server clock at one instant. Ignored unless served from localhost.
 # NOW_OVERRIDE=2026-12-04T11:59:59-06:00
+
+# Turn on the test-site tools (Test tab in the teacher app: step the clock, fill random scores).
+# TEST_MODE=on

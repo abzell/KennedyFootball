@@ -75,6 +75,34 @@ export function defaultSeasonName(firstMonday: string): string {
   return `Kennedy 5th Grade Football League ${y}–${String((y + 1) % 100).padStart(2, '0')}`;
 }
 
+export interface ClockStep {
+  at: number;
+  label: string;
+}
+
+/**
+ * The next moment at which something changes (a week begins, locks, or publishes).
+ * Used by the test-mode clock to step through a season.
+ */
+export function nextClockStep(weeks: (ClockWeek & { label: string })[], now: number): ClockStep | null {
+  const events = new Map<number, string[]>();
+  const add = (at: number, label: string) => events.set(at, [...(events.get(at) ?? []), label]);
+  for (const w of weeks) {
+    if (w.type === 'skip') {
+      add(w.startAt, `${w.label} begins (no games)`);
+    } else {
+      add(w.startAt, `${w.label} begins: scoring opens`);
+      add(w.lockAt, `${w.label} locks: reveal opens`);
+      add(w.publishAt, `${w.label} results go public`);
+    }
+  }
+  const next = [...events.keys()].filter((at) => at > now).sort((a, b) => a - b)[0];
+  if (next === undefined) return null;
+  // Publish labels read better before "begins" when both happen at the same Monday midnight.
+  const labels = events.get(next)!.sort((a, b) => Number(b.includes('go public')) - Number(a.includes('go public')));
+  return { at: next, label: labels.join(' · ') };
+}
+
 export type ScoringReason = 'no_season' | 'preseason' | 'open' | 'locked' | 'skip' | 'complete';
 
 export interface ClockWeek {
