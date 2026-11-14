@@ -5,11 +5,13 @@ import { readableOn } from '../../shared/nflTeams';
 import { TZ, formatDate } from '../../shared/time';
 import type { AuthStatus, AwardRow, TeacherWeekData } from '../../shared/types';
 import { Helmet } from '../components/Helmet';
+import { TestBanner, useTestStatus } from '../components/TestBanner';
 import { Notice } from '../components/ui';
 import { ApiError, api, useApi, useLookup, useOnline } from '../lib';
 import { useInstall, type InstallHelp } from './install';
 
 const Setup = lazy(() => import('./Setup'));
+const TestPanel = lazy(() => import('./TestPanel'));
 
 // ------------------------------------------------------------------ session context
 
@@ -651,8 +653,12 @@ const TABS = [
 ];
 
 function Shell() {
+  // The Test tab exists only on a deployment that was explicitly set up as a test site.
+  const testSite = useTestStatus()?.enabled === true;
+  const tabs = testSite ? [...TABS, { to: '/teacher/test', label: 'Test', icon: '⏱', end: false }] : TABS;
   return (
     <div className="flex min-h-screen flex-col">
+      <TestBanner />
       <header className="flex items-center justify-between border-b border-line px-3 py-2">
         <div className="display text-xl font-bold">
           <span className="text-gold">KFL</span> Coach
@@ -668,12 +674,13 @@ function Shell() {
             <Route path="log" element={<Log />} />
             <Route path="setup" element={<Setup />} />
             <Route path="settings" element={<Settings />} />
+            {testSite && <Route path="test" element={<TestPanel />} />}
             <Route path="*" element={<Score />} />
           </Routes>
         </Suspense>
       </main>
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-navy-2 pb-[env(safe-area-inset-bottom)]" aria-label="Teacher">
-        {TABS.map((t) => (
+      <nav className={`fixed inset-x-0 bottom-0 z-30 grid ${testSite ? 'grid-cols-5' : 'grid-cols-4'} border-t border-line bg-navy-2 pb-[env(safe-area-inset-bottom)]`} aria-label="Teacher">
+        {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.end} className={({ isActive }) => `flex min-h-[60px] flex-col items-center justify-center text-sm font-semibold ${isActive ? 'text-gold' : 'text-mute'}`}>
             <span aria-hidden="true" className="text-xl leading-none">
               {t.icon}

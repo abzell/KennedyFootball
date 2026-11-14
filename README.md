@@ -22,6 +22,7 @@ You need a free Cloudflare account and this repository on GitHub. Allow about 15
 3. Name it `kfl` and click **Create**.
 4. Open the new database and go to its **Console** tab.
 5. Open the file [`migrations/0001_init.sql`](migrations/0001_init.sql) in this repository, copy **everything**, paste it into the console and click **Execute**. This creates the empty tables.
+6. Do the same with [`migrations/0002_test_clock.sql`](migrations/0002_test_clock.sql). (It is only used by a test site, but running it everywhere keeps every database the same.)
 
 ### 2. Create the website
 
@@ -53,6 +54,23 @@ You need a free Cloudflare account and this repository on GitHub. Allow about 15
 
 Open `https://your-subdomain/teacher`. The first visitor sees a one-time **Set PIN** screen, so do this immediately after deploying, before sharing the address. Then open **Setup** and follow the four steps (Season, Divisions, Teams, Schedule).
 
+### Optional: a test site for rehearsing a whole season
+
+The real site always follows the real clock. To walk through a full season in a few minutes (reveals, playoffs, champion), make a second, separate **test site**. It has its own database, so nothing you do there touches the real one.
+
+1. Repeat step 1 with a second database named `kfl-test` (run both SQL files).
+2. Repeat step 2 to create a second Pages project from the same repository, for example `kfl-test`.
+3. Repeat step 3 for that project, choosing the `kfl-test` database for the `DB` binding.
+4. In the test project open **Settings → Variables and Secrets**, add a variable named `TEST_MODE` with the value `on`, and save. **Never add this variable to the real site's project.**
+5. Go to **Deployments → ⋯ → Retry deployment**.
+6. Open the test project's `…pages.dev` address. Every page shows a yellow **TEST SITE** strip. Set a PIN at `/teacher`, run **Setup**, then use the new **Test** tab:
+   - **Next step ▶** jumps the clock to the next moment something changes (a week begins, locks, or its results go public).
+   - **Fill random scores** adds points for every team playing that week.
+   - Keep the scoreboard or `/tv` open in another tab to watch the Reveal button appear and the results flip.
+   - To run it again, use **Settings → Start new season**.
+
+Without the `TEST_MODE` variable the Test tab does not exist and the server refuses every clock request, so the real site's time cannot be changed by anyone.
+
 ### Updating later
 
 Every push to the repository's main branch redeploys the site automatically. Your data is in D1 and is not touched by a redeploy.
@@ -67,6 +85,7 @@ Teacher app → **Settings → Start new season**, type `RESET`, then run throug
 | --- | --- |
 | "The database is not connected" | Step 3 was missed, or the site was not redeployed after adding the binding. The variable name must be `DB`. |
 | "The database has not been set up yet" | Step 1.5 was missed. Paste `migrations/0001_init.sql` into the D1 console. |
+| Test site: the clock will not move | Check the `TEST_MODE` variable is set to `on` on the test project and that it was redeployed afterwards. |
 | Forgot the PIN | In the D1 console run `UPDATE settings SET pin_hash = NULL, pin_version = pin_version + 1 WHERE id = 1;` then open `/teacher` and set a new PIN. Everyone is signed out. |
 | "Too many wrong PINs" | Five wrong PINs from one network block that network for 15 minutes. A school usually shares one network address, so this can affect all teachers at once. To clear it now, run `DELETE FROM login_attempt;` in the D1 console. |
 | Team logos show coloured circles | Logos load from ESPN's image server. If the school network blocks it, the app shows a circle with the team abbreviation instead. |
@@ -103,6 +122,8 @@ NOW_OVERRIDE=2026-12-04T11:59:59-06:00
 
 `NOW_OVERRIDE` is honoured only when the site is served from `localhost`; it is ignored in production even if the variable is set.
 
+Alternatively put `TEST_MODE=on` in `.dev.vars` to get the same **Test** tab locally that a test site has (step the clock, fill random scores). Use one or the other: `NOW_OVERRIDE` freezes the clock, so the test clock refuses to move while it is set.
+
 ### Migrations
 
 Schema changes go in a new numbered file in `migrations/`.
@@ -123,7 +144,7 @@ shared/      Pure logic used by both server and browser
   league.ts      Results, records, tiebreakers, playoff seeding, power rankings
   nflTeams.ts    The 32 franchises (names, colours, ESPN logo codes)
 server/      API (Cloudflare Pages Functions)
-  app.ts         Routes; every write checks the teacher session
+  app.ts         Routes; every write checks the teacher session; test-site clock (TEST_MODE only)
   store.ts       D1 access; lazy week finalisation and playoff creation (no cron)
   views.ts       What each audience may see: public = published weeks only
   auth.ts        PIN hash + signed 365-day session cookie

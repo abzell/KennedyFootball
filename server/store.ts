@@ -9,6 +9,8 @@ import { finalField, validateStructure, type SWeek, type Snapshot } from './view
 export interface Env {
   DB: D1Database;
   NOW_OVERRIDE?: string;
+  /** Set (to any value except off/false/0) only on a separate TEST site: enables the simulated clock. */
+  TEST_MODE?: string;
 }
 
 export class HttpError extends Error {
