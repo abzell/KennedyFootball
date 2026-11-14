@@ -18,11 +18,13 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         cleanupOutdatedCaches: true,
+        // Helmet images are cached the first time each one is shown rather than all up front.
+        globIgnores: ['**/helmets/**'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/a\.espncdn\.com\/i\/teamlogos\//,
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'team-logos', expiration: { maxEntries: 64 }, cacheableResponse: { statuses: [0, 200] } },
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith('/helmets/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'helmets', expiration: { maxEntries: 80 }, cacheableResponse: { statuses: [200] } },
           },
         ],
       },
