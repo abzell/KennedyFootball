@@ -25,7 +25,7 @@ function TvGame({ game, l }: { game: Game; l: Lookup }) {
     const r = sideResult(game, side);
     return (
       <div className="flex items-center gap-4">
-        <Helmet nfl={t.id} size={72} facing={side === 'a' ? 'right' : 'left'} />
+        <Helmet nfl={t.id} size={72} />
         <div className={`display min-w-0 flex-1 truncate text-[44px] font-bold leading-tight ${r === 'W' ? 'text-gold' : ''}`}>{t.name}</div>
         <span className="text-2xl">
           <ResultBadge r={r} />

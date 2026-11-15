@@ -304,7 +304,7 @@ function TeamsStep({ data, run, l }: StepProps) {
                 const nfl = l.team(t.id).nfl;
                 return (
                   <li key={t.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-line px-3 py-2">
-                    <Helmet nfl={nfl.id} size={36} />
+                    <Helmet nfl={nfl.id} size={44} />
                     <label className="sr-only" htmlFor={`nfl-${t.id}`}>
                       NFL team for {fullName(nfl)}
                     </label>
@@ -351,6 +351,8 @@ function TeamsStep({ data, run, l }: StepProps) {
             </ul>
             {!data.structureLocked && free.length > 0 && (
               <div className="mt-3 flex flex-wrap items-end gap-2">
+                {/* preview of the team about to be added */}
+                {choice && <Helmet key={choice} nfl={choice} size={44} />}
                 <div className="min-w-0 flex-1 basis-48">
                   <label className="label" htmlFor={`add-${d.id}`}>
                     Add a team to {d.name}

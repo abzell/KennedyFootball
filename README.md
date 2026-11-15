@@ -138,7 +138,7 @@ Schema changes go in a new numbered file in `migrations/`.
 
 The 32 helmet images live in `public/helmets/<team id>.png` (lower-case abbreviation, e.g. `kc.png`, `wsh.png`), 256×256 with a transparent background, drawn facing right. They are served by the site itself, so nothing is loaded from ESPN.
 
-In a matchup the right-hand helmet is mirrored to face its opponent. Eight helmets carry lettering that would read backwards when mirrored (`chi`, `gb`, `kc`, `lv`, `nyg`, `nyj`, `pit`, `sf`), so those are not mirrored. To make one face left properly, add a left-facing image at `public/helmets/left/<team id>.png` and add its id to `LEFT_FACING_ART` in `src/components/Helmet.tsx`.
+Every helmet is shown as drawn, facing right, everywhere on the site. Nothing is mirrored, because mirroring would turn the lettering on several logos backwards.
 
 ### How it is put together
 
