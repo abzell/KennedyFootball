@@ -121,7 +121,7 @@ function GameStep({ game, l, reduced }: { game: Game; l: Lookup; reduced: boolea
       <div className={`relative flex flex-1 flex-col items-center overflow-hidden rounded-3xl border-2 p-4 sm:p-8 ${won ? 'border-gold' : 'border-line'} bg-navy-2`}>
         {won && <div className="anim-flash pointer-events-none absolute inset-0" style={{ background: `linear-gradient(135deg, ${t.primaryColor}, ${t.secondaryColor})` }} />}
         <div className={`relative flex flex-col items-center ${key === 'a' ? 'anim-left' : 'anim-right'}`}>
-          <Helmet nfl={t.id} size={Math.min(200, Math.max(90, window.innerWidth / 8))} facing={key === 'a' ? 'right' : 'left'} />
+          <Helmet nfl={t.id} size={Math.min(200, Math.max(90, window.innerWidth / 8))} />
           <div className="mt-2 text-center text-sm text-mute sm:text-xl">
             {s.seed ? `#${s.seed} seed · ` : ''}
             {t.city}

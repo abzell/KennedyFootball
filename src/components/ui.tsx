@@ -47,7 +47,7 @@ function SideRow({ game, side, l }: { game: Game; side: 'a' | 'b'; l: Lookup }) 
   const r = sideResult(game, side);
   return (
     <div className="flex items-center gap-3">
-      <Helmet nfl={t.id} size={44} facing={side === 'a' ? 'right' : 'left'} />
+      <Helmet nfl={t.id} size={44} />
       <div className="min-w-0 flex-1">
         <div className="truncate text-xs text-mute">
           {s.seed ? `#${s.seed} · ` : ''}
@@ -108,7 +108,7 @@ export function PairingCard({ p, l }: { p: Pairing; l: Lookup }) {
   const b = l.team(p.bId).nfl;
   return (
     <div className="card flex items-center gap-2 p-3">
-      <Helmet nfl={a.id} size={40} facing="right" />
+      <Helmet nfl={a.id} size={40} />
       <div className="min-w-0 flex-1">
         <div className="display truncate text-lg font-bold">
           {p.seedA ? <span className="text-mute">#{p.seedA} </span> : null}
@@ -122,7 +122,7 @@ export function PairingCard({ p, l }: { p: Pairing; l: Lookup }) {
           {b.name}
         </div>
       </div>
-      <Helmet nfl={b.id} size={40} facing="left" />
+      <Helmet nfl={b.id} size={40} />
     </div>
   );
 }
